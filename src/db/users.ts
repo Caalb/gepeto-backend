@@ -1,8 +1,8 @@
-import moongose from "mongoose";
+import mongoose from "mongoose";
 
-const UserSchema = new moongose.Schema({
-  username: { type: String, required: true },
+const UserSchema = new mongoose.Schema({
   email: { type: String, required: true },
+  username: { type: String, required: true },
   authentication: {
     password: { type: String, required: true, select: false },
     salt: { type: String, select: false },
@@ -10,7 +10,7 @@ const UserSchema = new moongose.Schema({
   },
 });
 
-export const UserModel = moongose.model("User", UserSchema);
+export const UserModel = mongoose.model("User", UserSchema);
 
 export const getUsers = () => UserModel.find();
 export const getUserByEmail = (email: string) => UserModel.findOne({ email });
