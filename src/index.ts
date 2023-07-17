@@ -1,16 +1,37 @@
-import * as express from "express";
-import { Request, Response } from "express";
+import "dotenv/config";
+import express from "express";
+import http from "http";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+import compression from "compression";
+import cors from "cors";
+import moongoose from "mongoose";
+
+import router from "./router";
 
 const app = express();
-class Person {
-  sayHello() {
-    return "Hello World";
-  }
-}
-app.get("/", (req: Request, res: Response) => {
-  res.send(new Person().sayHello());
+
+app.use(
+  cors({
+    credentials: true,
+  }),
+);
+
+app.use(compression());
+app.use(cookieParser());
+app.use(bodyParser.json());
+
+const server = http.createServer(app);
+
+server.listen(8080, () => {
+  console.log("Server is running on port 8080");
 });
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+const MONGO_URL =
+  "mongodb+srv://caalb:caalb@gepeto.4pcrfvg.mongodb.net/?retryWrites=true&w=majority";
 
-export default Person;
+moongoose.Promise = Promise;
+moongoose.connect(MONGO_URL);
+moongoose.connection.on("error", (error: Error) => console.log(error));
+
+app.use("/", router());
